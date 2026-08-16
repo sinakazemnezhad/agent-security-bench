@@ -19,7 +19,7 @@ Frontier teams buy *Agent Execution Assurance* — not another chat wrapper. The
 2. Regression-test tool policy under adversarial prompts (injection, confused deputy, SSRF args).
 3. Emit receipts that CI and buyers can verify — `accepted` only when required checks pass.
 
-## What you get (v0.4)
+## What you get (v0.5)
 
 | Piece | Purpose |
 |-------|---------|
@@ -33,6 +33,14 @@ Frontier teams buy *Agent Execution Assurance* — not another chat wrapper. The
 | `tests/` | Engine + adapter unit tests |
 
 See [INDEX.md](INDEX.md) for the full catalog. Demand → buyer map: [docs/DEMAND_MAP_2026.md](docs/DEMAND_MAP_2026.md).
+
+## Money suite (ABCP twin)
+
+![money_v1 demo](docs/money_v1_demo.gif)
+
+
+
+Public scorecard: https://banking.noetfield.com/scorecard
 
 ## Install
 
