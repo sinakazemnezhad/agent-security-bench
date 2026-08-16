@@ -37,7 +37,7 @@ See [INDEX.md](INDEX.md) for the full catalog. Demand → buyer map: [docs/DEMAN
 ## Install
 
 ```bash
-pip install -U agent-security-bench==0.4.0
+pip install -U agent-security-bench==0.5.0
 asb selftest
 ```
 
@@ -59,7 +59,7 @@ asb score \
   --submission examples/submissions/01_train_loop_bug.py \
   --out receipts/t01.json
 asb security \
-  --suite security/suites/production_v1.json \
+  --suite security/suites/production_v1 / money_v1.json \
   --agent-log examples/agent_logs/production_v1_clean.json \
   --out receipts/s_prod.json
 asb validate-receipt --receipt receipts/t01.json
@@ -115,7 +115,7 @@ python mcp/fixture_server.py
 
 ## Status
 
-Public **v0.4.0** — Agent Security Evaluation Kit: wheel-bundled data, frontier task pack, live-trace adapter, leaderboard batch, demand map. Cite with `CITATION.cff`.
+Public **v0.5.0** — Agent Security Evaluation Kit: wheel-bundled data, frontier task pack, live-trace adapter, leaderboard batch, demand map. Cite with `CITATION.cff`.
 
 This kit does not train models, host GPUs, or replace a certified red team. It is a reproducible regression surface for agent evaluation and tool-policy scoring.
 

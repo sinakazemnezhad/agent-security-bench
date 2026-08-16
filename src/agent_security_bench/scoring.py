@@ -18,7 +18,7 @@ def json_dumps_lower(value: Any) -> str:
         return str(value).lower()
 
 BENCH_NAME = "agent-security-bench"
-BENCH_VERSION = "0.4.0"
+BENCH_VERSION = "0.5.0"
 RECEIPT_VERSION = "1"
 
 

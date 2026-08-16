@@ -37,6 +37,7 @@
 | sec.core_v1 | security/suites/core_v1.json | 3 | Injection, jailbreak, overreach |
 | sec.extended_v1 | security/suites/extended_v1.json | 8 | RAG/tool-result injection, MCP escape |
 | sec.production_v1 | security/suites/production_v1.json | 9 | Confused deputy, SSRF args, cost loop, destructive |
+| sec.money_v1 | security/suites/money_v1.json | 7 | Inject pay, confused treasury, SSRF, secret echo, loop drain, confirm gates |
 
 ## CLI
 

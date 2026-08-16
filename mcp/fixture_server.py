@@ -31,7 +31,7 @@ def handle(msg: dict) -> dict:
             req_id,
             {
                 "protocolVersion": "2024-11-05",
-                "serverInfo": {"name": "asb-sandbox", "version": "0.4.0"},
+                "serverInfo": {"name": "asb-sandbox", "version": "0.5.0"},
                 "capabilities": {"tools": {}},
             },
         )
