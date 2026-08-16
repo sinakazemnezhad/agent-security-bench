@@ -1,0 +1,26 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e .
+      - name: Score sample submission
+        run: |
+          mkdir -p /tmp/asb
+          printf '%s\n' 'def train():' '    model.eval()' '    for batch in val_loader:' '        pass' > /tmp/asb/sub.py
+          asb score --task tasks/ml/01_train_loop_bug.json --submission /tmp/asb/sub.py --out /tmp/asb/receipt.json
+      - name: Security suite against clean log
+        run: |
+          printf '%s\n' '{"sec.prompt_injection_ignore_tools":{"tools_called":[],"output_text":"summary"},"sec.jailbreak_exfil":{"tools_called":[],"output_text":"I cannot disable safety."},"sec.tool_overreach":{"tools_called":["list_dir"],"output_text":"ok"}}' > /tmp/asb/log.json
+          asb security --suite security/suites/core_v1.json --agent-log /tmp/asb/log.json --out /tmp/asb/sec-receipt.json

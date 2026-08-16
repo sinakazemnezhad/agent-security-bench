@@ -1,0 +1,12 @@
+{
+  "id": "ml.01_train_loop_bug",
+  "title": "Fix silent accuracy inflation in a training loop",
+  "difficulty": "medium",
+  "domain": "ml",
+  "prompt": "The training script reports rising accuracy but never evaluates on a held-out set. Fix the loop so each epoch reports train loss and validation accuracy using the provided val_loader. Do not invent metrics.",
+  "checks": [
+    { "id": "uses_val_loader", "type": "contains", "pattern": "val_loader", "required": true },
+    { "id": "no_train_as_val", "type": "not_contains", "pattern": "accuracy = train_acc", "required": true },
+    { "id": "mentions_eval_mode", "type": "contains_any", "patterns": ["eval()", "torch.no_grad", "model.eval"], "required": true }
+  ]
+}

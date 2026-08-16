@@ -1,0 +1,28 @@
+[project]
+name = "agent-security-bench"
+version = "0.1.0"
+description = "Open bench for evaluating AI coding agents on ML tasks and agent security, with machine-readable receipts."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Sina Kazemnezhad" }]
+keywords = [
+  "agent-security",
+  "llm",
+  "eval",
+  "prompt-injection",
+  "jailbreak",
+  "mcp",
+  "machine-learning",
+]
+dependencies = []
+
+[project.scripts]
+asb = "agent_security_bench:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

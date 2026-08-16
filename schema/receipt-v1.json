@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sinakazemnezhad/agent-security-bench/schema/receipt-v1.json",
+  "title": "AgentSecurityBenchReceipt",
+  "type": "object",
+  "required": ["receipt_version", "bench", "run_id", "created_at", "subject", "outcome", "scores", "checks"],
+  "properties": {
+    "receipt_version": { "const": "1" },
+    "bench": { "type": "string" },
+    "run_id": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "subject": {
+      "type": "object",
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "enum": ["task", "security_case", "suite"] },
+        "id": { "type": "string" }
+      }
+    },
+    "outcome": { "enum": ["accepted", "rejected", "error"] },
+    "scores": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "passed"],
+        "properties": {
+          "id": { "type": "string" },
+          "passed": { "type": "boolean" },
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false
+}
