@@ -1,11 +1,11 @@
 [project]
 name = "agent-security-bench"
-version = "0.1.0"
+version = "0.2.0"
 description = "Open bench for evaluating AI coding agents on ML tasks and agent security, with machine-readable receipts."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "Sina Kazemnezhad" }]
+authors = [{ name = "Sina Kazemnezhad", email = "operations@noetfield.com" }]
 keywords = [
   "agent-security",
   "llm",
@@ -14,11 +14,26 @@ keywords = [
   "jailbreak",
   "mcp",
   "machine-learning",
+  "receipts",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/sinakazemnezhad/agent-security-bench"
+Repository = "https://github.com/sinakazemnezhad/agent-security-bench"
+Issues = "https://github.com/sinakazemnezhad/agent-security-bench/issues"
+Related = "https://github.com/sinakazemnezhad/persian-llm-reference"
+
 [project.scripts]
-asb = "agent_security_bench:main"
+asb = "agent_security_bench.cli:main"
 
 [build-system]
 requires = ["setuptools>=68"]

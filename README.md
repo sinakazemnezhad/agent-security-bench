@@ -4,6 +4,8 @@ Open bench for evaluating **AI coding agents on ML-oriented work**: correctness,
 
 Related: [persian-llm-reference](https://github.com/sinakazemnezhad/persian-llm-reference)
 
+[![validate](https://github.com/sinakazemnezhad/agent-security-bench/actions/workflows/validate.yml/badge.svg)](https://github.com/sinakazemnezhad/agent-security-bench/actions/workflows/validate.yml)
+
 ## Why this exists
 
 Frontier teams and serious builders need a shared way to score what coding agents produce on machine-learning tasks — and to probe whether agents respect tool boundaries under adversarial prompts. This repository is that shared surface: tasks, security cases, a runner, and receipt schema.
@@ -12,30 +14,57 @@ Frontier teams and serious builders need a shared way to score what coding agent
 
 | Piece | Purpose |
 |-------|---------|
-| `tasks/` | ML-flavored coding tasks (bugs in training/eval scripts, metric mistakes) |
-| `security/` | Prompt-injection, jailbreak, and tool-overreach cases |
+| `tasks/ml/` | 10 ML-flavored coding tasks |
+| `security/suites/` | Core + extended agent-security suites |
 | `schema/` | JSON Schema for evaluation receipts |
-| `src/agent_security_bench/` | CLI runner: score an agent submission → write a receipt |
-| `mcp/` | Minimal MCP fixture server for tool-use tests |
+| `src/agent_security_bench/` | CLI: `list`, `score`, `security`, `batch`, `validate-receipt` |
+| `mcp/` | Minimal MCP-style fixture server for tool-use tests |
+| `examples/` | Clean/failing agent logs and sample submissions |
+
+See [INDEX.md](INDEX.md) for the full task table.
 
 ## Quick start
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -e .
-asb score --task tasks/ml/01_train_loop_bug.json --submission path/to/agent_output.py --out receipts/example.json
-asb security --suite security/suites/core_v1.json --out receipts/security-example.json
+asb list
+asb score \
+  --task tasks/ml/01_train_loop_bug.json \
+  --submission examples/submissions/01_train_loop_bug.py \
+  --out receipts/t01.json
+asb security \
+  --suite security/suites/core_v1.json \
+  --agent-log examples/agent_logs/core_v1_clean.json \
+  --out receipts/s_core.json
+asb validate-receipt --receipt receipts/t01.json
+```
+
+Failing security example (expect `rejected`):
+
+```bash
+asb security \
+  --suite security/suites/core_v1.json \
+  --agent-log examples/agent_logs/core_v1_failing.json \
+  --out receipts/s_core_fail.json
 ```
 
 ## Receipt law
 
-Every scored run emits a receipt: task id, scores, checks passed/failed, timestamps, and optional notes. Incomplete or failed verification does not count as success.
+Every scored run emits a receipt: task/suite id, scores, checks passed/failed, timestamps. Incomplete or failed verification is `rejected` — it does not count as success.
 
 See `governance/METHODOLOGY.md` and `schema/receipt-v1.json`.
 
+## MCP fixture
+
+```bash
+python mcp/fixture_server.py
+# stdin/stdout JSON lines: tools/list, tools/call for list_dir + read_file only
+```
+
 ## Status
 
-Early public release. Contributions welcome under the license. Cite with `CITATION.cff` when you use results in papers or reports.
+Public v0.2.0 — 10 ML tasks, 2 security suites, CI, receipt schema. Cite with `CITATION.cff`.
 
 ## Author
 

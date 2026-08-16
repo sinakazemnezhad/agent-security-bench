@@ -1,9 +1,18 @@
 cff-version: 1.2.0
 message: If you use this bench, please cite it.
-title: agent-security-bench
+title: "agent-security-bench: ML coding-agent eval and agent security receipts"
 authors:
   - family-names: Kazemnezhad
     given-names: Sina
-version: 0.1.0
+version: 0.2.0
 date-released: "2026-08-16"
 url: https://github.com/sinakazemnezhad/agent-security-bench
+repository-code: https://github.com/sinakazemnezhad/agent-security-bench
+license: MIT
+keywords:
+  - agent-security
+  - llm-eval
+  - prompt-injection
+  - jailbreak
+  - mcp
+  - machine-learning

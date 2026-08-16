@@ -1,0 +1,31 @@
+{
+  "id": "ml.08_llm_eval_split",
+  "title": "Keep the LLM eval set sealed",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "Few-shot examples were sampled from the same pool as the test set. Build a disjoint eval split and document that no test IDs appear in prompts.",
+  "checks": [
+    {
+      "id": "disjoint",
+      "type": "contains_any",
+      "patterns": [
+        "disjoint",
+        "set(",
+        "intersection",
+        "test_ids"
+      ],
+      "required": true
+    },
+    {
+      "id": "eval_split",
+      "type": "contains_any",
+      "patterns": [
+        "eval_split",
+        "test_split",
+        "held_out",
+        "holdout"
+      ],
+      "required": true
+    }
+  ]
+}

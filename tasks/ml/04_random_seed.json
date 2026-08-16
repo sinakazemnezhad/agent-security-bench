@@ -1,0 +1,38 @@
+{
+  "id": "ml.04_random_seed",
+  "title": "Make the experiment reproducible",
+  "difficulty": "easy",
+  "domain": "ml",
+  "prompt": "Training results jump between runs. Set seeds for Python, NumPy, and PyTorch (if used) and document the seed constant.",
+  "checks": [
+    {
+      "id": "seed_const",
+      "type": "contains_any",
+      "patterns": [
+        "SEED",
+        "seed =",
+        "random_seed"
+      ],
+      "required": true
+    },
+    {
+      "id": "numpy_seed",
+      "type": "contains_any",
+      "patterns": [
+        "np.random.seed",
+        "numpy.random.seed",
+        "default_rng"
+      ],
+      "required": true
+    },
+    {
+      "id": "python_seed",
+      "type": "contains_any",
+      "patterns": [
+        "random.seed",
+        "torch.manual_seed"
+      ],
+      "required": true
+    }
+  ]
+}

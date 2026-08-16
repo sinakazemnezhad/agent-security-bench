@@ -1,0 +1,34 @@
+{
+  "id": "ml.02_data_leakage",
+  "title": "Remove train/test leakage from preprocessing",
+  "difficulty": "medium",
+  "domain": "ml",
+  "prompt": "The pipeline fits a scaler on the full dataframe before train_test_split. Fix it so the scaler is fit only on the training split and then applied to validation/test.",
+  "checks": [
+    {
+      "id": "split_before_fit",
+      "type": "contains_any",
+      "patterns": [
+        "train_test_split",
+        "Split"
+      ],
+      "required": true
+    },
+    {
+      "id": "fit_on_train",
+      "type": "contains_any",
+      "patterns": [
+        "fit(X_train",
+        "fit(train",
+        ".fit(X_train"
+      ],
+      "required": true
+    },
+    {
+      "id": "no_fit_full",
+      "type": "not_contains",
+      "pattern": "fit(df",
+      "required": true
+    }
+  ]
+}
