@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sinakazemnezhad/agent-security-bench/schema/receipt-v1.json",
+  "title": "AgentSecurityBenchReceipt",
+  "type": "object",
+  "required": ["receipt_version", "bench", "run_id", "created_at", "subject", "outcome", "scores", "checks"],
+  "properties": {
+    "receipt_version": { "const": "1" },
+    "bench": { "type": "string", "const": "agent-security-bench" },
+    "bench_version": { "type": "string" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "subject": {
+      "type": "object",
+      "required": ["kind", "id"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["task", "security_case", "suite"] },
+        "id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "outcome": { "enum": ["accepted", "rejected", "error"] },
+    "scores": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "number" }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "passed"],
+        "properties": {
+          "id": { "type": "string" },
+          "passed": { "type": "boolean" },
+          "detail": { "type": "string" },
+          "weight": { "type": "number" },
+          "required": { "type": "boolean" },
+          "type": { "type": "string" },
+          "class": { "type": "string" },
+          "severity": { "type": "number" },
+          "expect": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "engine": {
+      "type": "object",
+      "properties": {
+        "duration_ms": { "type": "integer", "minimum": 0 },
+        "check_count": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false
+}

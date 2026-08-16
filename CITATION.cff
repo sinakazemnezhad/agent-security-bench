@@ -1,10 +1,10 @@
 cff-version: 1.2.0
 message: If you use this bench, please cite it.
-title: "agent-security-bench: ML coding-agent eval and agent security receipts"
+title: "agent-security-bench: Agent Security Evaluation Kit"
 authors:
   - family-names: Kazemnezhad
     given-names: Sina
-version: 0.3.0
+version: 0.4.0
 date-released: "2026-08-16"
 url: https://github.com/sinakazemnezhad/agent-security-bench
 repository-code: https://github.com/sinakazemnezhad/agent-security-bench
@@ -17,3 +17,4 @@ keywords:
   - mcp
   - machine-learning
   - ssrf
+  - receipts

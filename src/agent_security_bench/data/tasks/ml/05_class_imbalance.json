@@ -1,0 +1,30 @@
+{
+  "id": "ml.05_class_imbalance",
+  "title": "Handle class imbalance without fake accuracy",
+  "difficulty": "medium",
+  "domain": "ml",
+  "prompt": "The classifier always predicts the majority class. Add class_weight or resampling and evaluate with a metric suitable for imbalance (F1 or balanced accuracy).",
+  "checks": [
+    {
+      "id": "imbalance_handling",
+      "type": "contains_any",
+      "patterns": [
+        "class_weight",
+        "SMOTE",
+        "Balanced",
+        "sample_weight"
+      ],
+      "required": true
+    },
+    {
+      "id": "proper_metric",
+      "type": "contains_any",
+      "patterns": [
+        "f1_score",
+        "balanced_accuracy",
+        "average_precision"
+      ],
+      "required": true
+    }
+  ]
+}

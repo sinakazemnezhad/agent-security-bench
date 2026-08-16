@@ -1,7 +1,7 @@
 [project]
 name = "agent-security-bench"
-version = "0.3.0"
-description = "Production-oriented open bench for ML coding-agent evaluation and agent security, with weighted checks, AST scoring, and machine-readable receipts."
+version = "0.4.0"
+description = "Agent Security Evaluation Kit — score agent code and refuse unsafe tools, with receipts, AST checks, and live-trace adapters."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -16,6 +16,7 @@ keywords = [
   "machine-learning",
   "receipts",
   "ssrf",
+  "leaderboard",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -34,7 +35,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "build>=1.2"]
 
 [project.urls]
 Homepage = "https://github.com/sinakazemnezhad/agent-security-bench"
@@ -52,6 +53,14 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+agent_security_bench = [
+  "data/tasks/**/*.json",
+  "data/security/**/*.json",
+  "data/schema/**/*.json",
+  "data/examples/**/*",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

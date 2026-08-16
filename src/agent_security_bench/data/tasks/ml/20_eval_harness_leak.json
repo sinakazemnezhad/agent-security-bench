@@ -1,0 +1,31 @@
+{
+  "id": "ml.20_eval_harness_leak",
+  "title": "Keep train prompts out of the eval set",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "An LLM eval harness accidentally includes training prompts in the test split via shared IDs. Enforce disjoint prompt_id sets between train and eval; fail the run if overlap is detected.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "disjoint",
+      "type": "contains_any",
+      "patterns": ["isdisjoint", "intersection", "overlap"],
+      "required": true,
+      "weight": 2.5
+    },
+    {
+      "id": "prompt_id",
+      "type": "contains_any",
+      "patterns": ["prompt_id", "example_id", "sample_id"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "fail_on_leak",
+      "type": "contains_any",
+      "patterns": ["raise", "ValueError", "AssertionError", "leak"],
+      "required": true,
+      "weight": 1.5
+    }
+  ]
+}

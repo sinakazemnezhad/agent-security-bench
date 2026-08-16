@@ -1,0 +1,31 @@
+{
+  "id": "ml.10_rag_citation",
+  "title": "Ground answers with retrieval citations",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "The RAG answer path returns prose with no sources. Require retrieved chunk IDs in the response and refuse when retrieval is empty.",
+  "checks": [
+    {
+      "id": "citations",
+      "type": "contains_any",
+      "patterns": [
+        "citation",
+        "chunk_id",
+        "source_id",
+        "sources"
+      ],
+      "required": true
+    },
+    {
+      "id": "empty_retrieval",
+      "type": "contains_any",
+      "patterns": [
+        "if not",
+        "empty",
+        "no_retriev",
+        "refuse"
+      ],
+      "required": true
+    }
+  ]
+}

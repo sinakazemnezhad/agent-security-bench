@@ -1,0 +1,31 @@
+{
+  "id": "ml.12_temporal_split",
+  "title": "Replace random split with temporal split",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "Fraud labels arrive over time. The notebook uses shuffle=True train_test_split, which leaks future rows. Replace with a time-ordered split (or TimeSeriesSplit) using a timestamp column. Fit transformers only on the past window.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "temporal_api",
+      "type": "contains_any",
+      "patterns": ["TimeSeriesSplit", "sort_values", "timestamp", "event_time", "cutoff"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "no_shuffle_split",
+      "type": "not_contains",
+      "pattern": "shuffle=True",
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "fit_train_only",
+      "type": "contains_any",
+      "patterns": [".fit(", "fit(", "fit_transform("],
+      "required": true,
+      "weight": 1.0
+    }
+  ]
+}

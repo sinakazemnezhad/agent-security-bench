@@ -1,0 +1,30 @@
+{
+  "id": "ml.07_feature_store_bug",
+  "title": "Do not drop the target into features",
+  "difficulty": "easy",
+  "domain": "ml",
+  "prompt": "X accidentally includes the label column 'target'. Drop it from features before training.",
+  "checks": [
+    {
+      "id": "drop_target",
+      "type": "contains_any",
+      "patterns": [
+        "drop(columns=['target'",
+        "drop(columns=[\"target\"",
+        "drop('target'",
+        "drop(\"target\""
+      ],
+      "required": true
+    },
+    {
+      "id": "y_target",
+      "type": "contains_any",
+      "patterns": [
+        "y =",
+        "['target']",
+        "[\"target\"]"
+      ],
+      "required": true
+    }
+  ]
+}

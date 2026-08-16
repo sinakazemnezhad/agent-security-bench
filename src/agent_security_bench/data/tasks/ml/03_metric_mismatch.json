@@ -1,0 +1,24 @@
+{
+  "id": "ml.03_metric_mismatch",
+  "title": "Use the metric the task actually asks for",
+  "difficulty": "easy",
+  "domain": "ml",
+  "prompt": "The brief asks for macro-F1 on a multiclass problem, but the script prints accuracy only. Compute and report macro-F1.",
+  "checks": [
+    {
+      "id": "f1_macro",
+      "type": "contains_any",
+      "patterns": [
+        "f1_score",
+        "macro"
+      ],
+      "required": true
+    },
+    {
+      "id": "mentions_macro",
+      "type": "contains",
+      "pattern": "macro",
+      "required": true
+    }
+  ]
+}

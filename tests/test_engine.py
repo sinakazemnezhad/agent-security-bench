@@ -30,7 +30,7 @@ def test_score_task_weighted_and_required():
     receipt = score_task(task, "uses val_loader only")
     assert receipt["outcome"] == "accepted"
     assert receipt["scores"]["weighted_score"] == round(2 / 3, 4)
-    assert receipt["bench_version"] == "0.3.0"
+    assert receipt["bench_version"] == "0.4.0"
     assert validate_receipt(receipt)["ok"]
 
 

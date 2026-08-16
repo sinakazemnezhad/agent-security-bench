@@ -1,0 +1,31 @@
+{
+  "id": "ml.19_tenant_vector_keys",
+  "title": "Scope vector retrieval by tenant",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "A shared vector index mixes embeddings from multiple tenants. Namespace every upsert/query with tenant_id and reject queries that omit tenant scope or attempt cross-tenant collection names.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "tenant_scope",
+      "type": "contains_any",
+      "patterns": ["tenant_id", "tenantId", "namespace"],
+      "required": true,
+      "weight": 2.5
+    },
+    {
+      "id": "reject_cross",
+      "type": "contains_any",
+      "patterns": ["PermissionError", "cross-tenant", "Forbidden", "raise"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "query_scoped",
+      "type": "contains_any",
+      "patterns": ["query", "upsert", "collection"],
+      "required": true,
+      "weight": 1.0
+    }
+  ]
+}

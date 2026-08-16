@@ -1,0 +1,31 @@
+{
+  "id": "ml.22_tool_loop_cost_cap",
+  "title": "Cap tool-loop iterations and estimated cost",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "Agents can burn budget in unbounded tool loops. Enforce max_tool_calls per turn and an estimated USD cost cap; stop the loop and return a receipt note when either limit is hit.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "max_calls",
+      "type": "contains_any",
+      "patterns": ["max_tool_calls", "MAX_TOOL", "tool_call_limit"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "cost_cap",
+      "type": "contains_any",
+      "patterns": ["cost_cap", "max_cost", "budget", "usd"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "stop_loop",
+      "type": "contains_any",
+      "patterns": ["break", "stop", "return", "limit"],
+      "required": true,
+      "weight": 1.0
+    }
+  ]
+}

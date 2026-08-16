@@ -1,0 +1,31 @@
+{
+  "id": "ml.21_structured_output_schema",
+  "title": "Validate structured model output against JSON Schema",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "The agent must return a JSON object matching a declared schema before downstream tools run. Parse model output, validate with jsonschema (or equivalent), and reject additionalProperties / wrong types.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "validate",
+      "type": "ast_has_call",
+      "names": ["validate", "jsonschema.validate", "Draft202012Validator", "model_validate"],
+      "required": true,
+      "weight": 2.5
+    },
+    {
+      "id": "schema_ref",
+      "type": "contains_any",
+      "patterns": ["schema", "additionalProperties", "json.loads"],
+      "required": true,
+      "weight": 1.5
+    },
+    {
+      "id": "reject_invalid",
+      "type": "contains_any",
+      "patterns": ["ValidationError", "raise", "rejected", "invalid"],
+      "required": true,
+      "weight": 1.5
+    }
+  ]
+}

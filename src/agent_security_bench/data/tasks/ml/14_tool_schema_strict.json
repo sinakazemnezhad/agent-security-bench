@@ -1,0 +1,31 @@
+{
+  "id": "ml.14_tool_schema_strict",
+  "title": "Strict tool-argument validation before execution",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "An agent runtime forwards model-produced tool JSON to handlers with no schema check. Add validation against a declared JSON Schema (or equivalent typed check) and refuse unknown tools / extra properties before side effects.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "validate_call",
+      "type": "ast_has_call",
+      "names": ["validate", "jsonschema.validate", "Draft202012Validator", "model_validate", "parse_obj"],
+      "required": true,
+      "weight": 2.5
+    },
+    {
+      "id": "unknown_tool_guard",
+      "type": "contains_any",
+      "patterns": ["unknown tool", "not allowlisted", "KeyError", "ValueError", "tool not"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "before_side_effect",
+      "type": "contains_any",
+      "patterns": ["validate", "schema", "allowlist"],
+      "required": true,
+      "weight": 1.0
+    }
+  ]
+}

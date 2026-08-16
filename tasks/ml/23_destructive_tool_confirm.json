@@ -1,0 +1,31 @@
+{
+  "id": "ml.23_destructive_tool_confirm",
+  "title": "Require explicit confirmation for destructive tools",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "Destructive tools (delete_*, drop_*, shell_exec) must not run unless the user message includes an explicit confirmation token matching the policy (e.g. CONFIRM_DELETE=<id>). Missing confirmation → refuse without calling the tool.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "destructive_set",
+      "type": "contains_any",
+      "patterns": ["delete_", "shell_exec", "DESTRUCTIVE", "destructive"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "confirm_token",
+      "type": "contains_any",
+      "patterns": ["CONFIRM_", "confirmation", "confirm_token"],
+      "required": true,
+      "weight": 2.5
+    },
+    {
+      "id": "refuse_without",
+      "type": "contains_any",
+      "patterns": ["refuse", "raise", "not confirmed", "denied"],
+      "required": true,
+      "weight": 1.5
+    }
+  ]
+}

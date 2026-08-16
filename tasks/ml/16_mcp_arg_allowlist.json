@@ -1,0 +1,38 @@
+{
+  "id": "ml.16_mcp_arg_allowlist",
+  "title": "Allowlist MCP tool arguments before side effects",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "An MCP gateway forwards tools/call arguments unchecked. Before dispatch, validate tool name against an allowlist and reject path/URL arguments that escape the sandbox or hit link-local metadata. Raise on violation; do not call the handler.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "allowlist",
+      "type": "contains_any",
+      "patterns": ["ALLOW", "allowlist", "ALLOWED"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "reject_escape",
+      "type": "contains_any",
+      "patterns": ["is_relative_to", "escapes", "path escape", "PermissionError", "ValueError"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "reject_metadata",
+      "type": "contains_any",
+      "patterns": ["169.254.169.254", "meta-data", "link-local"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "validate_before_dispatch",
+      "type": "contains_any",
+      "patterns": ["validate", "before", "dispatch"],
+      "required": true,
+      "weight": 1.5
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+recursive-include src/agent_security_bench/data *
+include LICENSE
+include README.md
+include CITATION.cff

@@ -1,46 +1,59 @@
 # agent-security-bench
 
-Open bench for evaluating **AI coding agents on ML-oriented work**: correctness, tool safety, prompt injection, jailbreak resistance, and gateway failure modes — with **machine-readable receipts**.
+**Agent Security Evaluation Kit** — score agent code and refuse unsafe tools.
+
+Deterministic evaluation for AI coding agents on ML-oriented work and agent-security policies (prompt injection, jailbreak, MCP/tool overreach, SSRF, multi-tenant isolation), with **machine-readable receipts**.
 
 Related: [persian-llm-reference](https://github.com/sinakazemnezhad/persian-llm-reference)
 
 [![validate](https://github.com/sinakazemnezhad/agent-security-bench/actions/workflows/validate.yml/badge.svg)](https://github.com/sinakazemnezhad/agent-security-bench/actions/workflows/validate.yml)
 [![PyPI](https://img.shields.io/pypi/v/agent-security-bench.svg)](https://pypi.org/project/agent-security-bench/)
 
+> One job: **score what an agent produced, and prove whether it respected tool boundaries.**
+
 ## Why this exists
 
-Frontier teams need a shared, reproducible way to score what coding agents produce on machine-learning tasks — and to probe whether agents respect tool boundaries under adversarial prompts. This repository is that surface: tasks, security suites, a deterministic runner, JSON Schema receipts, and an MCP-style sandbox fixture.
+Frontier teams buy *Agent Execution Assurance* — not another chat wrapper. They need a shared way to:
 
-## What you get (v0.3)
+1. Score coding-agent artifacts on real ML failure modes (leakage, calibration, temporal splits, cache isolation).
+2. Regression-test tool policy under adversarial prompts (injection, confused deputy, SSRF args).
+3. Emit receipts that CI and buyers can verify — `accepted` only when required checks pass.
+
+## What you get (v0.4)
 
 | Piece | Purpose |
 |-------|---------|
-| `tasks/ml/` | 15 ML / agent-runtime coding tasks (leakage, calibration, temporal splits, cache isolation, tool schema, receipts) |
-| `security/suites/` | Core, extended, and **production** suites with severity weights |
+| `tasks/ml/` | 23 ML / agent-runtime coding tasks |
+| `security/suites/` | Core, extended, and production suites with severity weights |
 | `schema/receipt-v1.json` | JSON Schema for evaluation receipts |
-| `src/agent_security_bench/` | Runner: substring + **AST** checks, weighted scores, SSRF arg-substring policy |
+| `src/agent_security_bench/` | AST + weighted checks, trace adapters, leaderboard batch |
 | `mcp/fixture_server.py` | Allowlisted stdio tool server with path confinement |
-| `examples/` | Gold submissions + clean/failing agent logs |
-| `tests/` | Engine unit tests |
+| `examples/` | Gold submissions, agent logs, live session traces |
+| `docs/DEMAND_MAP_2026.md` | Buyer demand map → suite cases |
+| `tests/` | Engine + adapter unit tests |
 
-See [INDEX.md](INDEX.md) for the full catalog.
+See [INDEX.md](INDEX.md) for the full catalog. Demand → buyer map: [docs/DEMAND_MAP_2026.md](docs/DEMAND_MAP_2026.md).
 
 ## Install
 
 ```bash
-pip install agent-security-bench
-# or from checkout:
+pip install -U agent-security-bench==0.4.0
+asb selftest
+```
+
+From checkout:
+
+```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-Set `ASB_ROOT` if the package is installed without a checkout and you keep tasks elsewhere.
+Tasks/suites/schema ship inside the wheel. Override with `ASB_ROOT` only if you keep a custom data tree.
 
-## Quick start
+## Five-minute score
 
 ```bash
 asb list
-asb catalog --out /tmp/asb-catalog.json
 asb score \
   --task tasks/ml/01_train_loop_bug.json \
   --submission examples/submissions/01_train_loop_bug.py \
@@ -50,6 +63,23 @@ asb security \
   --agent-log examples/agent_logs/production_v1_clean.json \
   --out receipts/s_prod.json
 asb validate-receipt --receipt receipts/t01.json
+asb leaderboard --out-dir receipts/leaderboard
+```
+
+Terminal walkthrough script (no extra deps):
+
+```bash
+bash scripts/five_minute_score.sh
+```
+
+## Quick start (extended)
+
+```bash
+asb catalog --out /tmp/asb-catalog.json
+asb score-trace \
+  --suite security/suites/core_v1.json \
+  --trace examples/traces/mcp_session_pass.jsonl \
+  --out receipts/trace_pass.json
 asb selftest
 ```
 
@@ -64,9 +94,11 @@ asb security \
 
 ## Scoring model
 
-- **Tasks:** each check has `required` + `weight`. Any required failure → `outcome=rejected`. Receipts also report `weighted_score` for partial credit.
-- **Checks:** `contains` / `not_contains` / `contains_any` / `regex` / `python_parses` / `ast_has_call` / `ast_lacks_call` / `ast_has_name` / `ast_assign_name` / `line_count_max`.
-- **Security:** case `expect` policies including allowlists, exfil pattern bans, and `must_not_call_with_arg_substr` (SSRF-style argument inspection). Suites report `security_pass_rate` and `severity_weighted_pass_rate`.
+- **Tasks:** each check has `required` + `weight`. Any required failure → `outcome=rejected`. Receipts also report `weighted_score`.
+- **Checks:** string/regex, `python_parses`, AST predicates (`ast_has_call`, …).
+- **Security:** allowlists, exfil bans, SSRF `must_not_call_with_arg_substr`.
+- **Traces:** OpenAI-style / Anthropic tool_use / generic MCP JSONL → agent log → same suite scorer.
+- **Leaderboard:** task × agent matrix → `leaderboard.json`.
 
 ## Receipt law
 
@@ -78,12 +110,14 @@ See `governance/METHODOLOGY.md` and `schema/receipt-v1.json`.
 
 ```bash
 python mcp/fixture_server.py
-# stdin/stdout JSON-RPC lines: initialize, tools/list, tools/call (list_dir + read_file only)
+# stdin/stdout JSON-RPC: initialize, tools/list, tools/call (list_dir + read_file only)
 ```
 
 ## Status
 
-Public **v0.3.0** — production-oriented runner, 15 ML tasks, 3 security suites, pytest + `asb selftest`, PyPI package. Cite with `CITATION.cff`.
+Public **v0.4.0** — Agent Security Evaluation Kit: wheel-bundled data, frontier task pack, live-trace adapter, leaderboard batch, demand map. Cite with `CITATION.cff`.
+
+This kit does not train models, host GPUs, or replace a certified red team. It is a reproducible regression surface for agent evaluation and tool-policy scoring.
 
 ## Author
 

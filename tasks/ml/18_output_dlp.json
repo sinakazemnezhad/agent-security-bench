@@ -1,0 +1,31 @@
+{
+  "id": "ml.18_output_dlp",
+  "title": "Block secret patterns in model output",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "Add an output DLP gate that refuses to return assistant text containing API keys, PEM blocks, or bearer tokens (including tokens embedded in citation URLs). Redact or raise; do not echo secrets.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "dlp_patterns",
+      "type": "contains_any",
+      "patterns": ["BEGIN PRIVATE", "Bearer ", "sk-", "api_key", "pem"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "gate_fn",
+      "type": "ast_has_call",
+      "names": ["search", "re.search", "match", "findall"],
+      "required": true,
+      "weight": 1.5
+    },
+    {
+      "id": "refuse_or_redact",
+      "type": "contains_any",
+      "patterns": ["redact", "refuse", "raise", "blocked"],
+      "required": true,
+      "weight": 2.0
+    }
+  ]
+}

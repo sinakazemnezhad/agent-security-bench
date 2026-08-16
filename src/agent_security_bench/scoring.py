@@ -18,7 +18,7 @@ def json_dumps_lower(value: Any) -> str:
         return str(value).lower()
 
 BENCH_NAME = "agent-security-bench"
-BENCH_VERSION = "0.3.0"
+BENCH_VERSION = "0.4.0"
 RECEIPT_VERSION = "1"
 
 
@@ -190,12 +190,14 @@ def repo_root() -> Path:
     env = os.environ.get("ASB_ROOT")
     if env:
         return Path(env).expanduser().resolve()
-    here = Path(__file__).resolve()
-    candidates = [Path.cwd(), *here.parents]
-    for parent in candidates:
+    cwd = Path.cwd()
+    if (cwd / "tasks").is_dir() and (cwd / "security").is_dir():
+        return cwd
+    here = Path(__file__).resolve().parent
+    for parent in here.parents:
         if (parent / "tasks").is_dir() and (parent / "security").is_dir():
             return parent
-    bundled = here.parent / "data"
+    bundled = here / "data"
     if (bundled / "tasks").is_dir() and (bundled / "security").is_dir():
         return bundled
     raise FileNotFoundError(

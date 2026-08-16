@@ -7,4 +7,5 @@
 - Every scored run must write a receipt; `outcome=accepted` only when required checks pass.
 - Prefer AST / schema checks when string predicates are ambiguous.
 - Security logs that omit `tool_calls` for monitored tools fail closed on arg policies.
-- CLI: `asb list`, `asb catalog`, `asb score`, `asb security`, `asb batch`, `asb validate-receipt`, `asb selftest`.
+- After editing `tasks/`, `security/`, `schema/`, or `examples/`, run `bash scripts/sync_package_data.sh`.
+- CLI: `asb list`, `asb catalog`, `asb score`, `asb security`, `asb score-trace`, `asb batch`, `asb leaderboard`, `asb validate-receipt`, `asb selftest`.

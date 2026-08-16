@@ -4,6 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
+from .adapters import load_trace, map_session_to_suite_cases, trace_to_agent_log
+from .leaderboard import build_leaderboard
 from .scoring import (
     BENCH_VERSION,
     build_catalog,
@@ -81,6 +83,27 @@ def cmd_security(args: argparse.Namespace) -> int:
     return 0 if receipt["outcome"] == "accepted" else 1
 
 
+def cmd_score_trace(args: argparse.Namespace) -> int:
+    suite = load_json(args.suite)
+    events = load_trace(args.trace)
+    agent_log = trace_to_agent_log(events)
+    agent_log = map_session_to_suite_cases(agent_log, suite)
+    receipt = score_security_suite(suite, agent_log)
+    write_json(args.out, receipt)
+    print(
+        json.dumps(
+            {
+                "outcome": receipt["outcome"],
+                "out": str(args.out),
+                "suite": suite["id"],
+                "security_pass_rate": receipt["scores"]["security_pass_rate"],
+                "trace": str(args.trace),
+            }
+        )
+    )
+    return 0 if receipt["outcome"] == "accepted" else 1
+
+
 def cmd_batch(args: argparse.Namespace) -> int:
     out_dir = args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -124,6 +147,32 @@ def cmd_batch(args: argparse.Namespace) -> int:
     return exit_code
 
 
+def cmd_leaderboard(args: argparse.Namespace) -> int:
+    root = repo_root()
+    submissions = args.submissions_dir or (root / "examples" / "submissions")
+    board = build_leaderboard(
+        agent_id=args.agent_id,
+        submissions_dir=submissions,
+        out_dir=args.out_dir,
+        root=root,
+    )
+    print(
+        json.dumps(
+            {
+                "out": str(args.out_dir / "leaderboard.json"),
+                "agent_id": args.agent_id,
+                "pass_rate": board["agents"][0]["pass_rate"],
+                "scored_accepted": board["agents"][0]["scored_accepted"],
+                "scored": board["agents"][0]["scored"],
+                "total": board["agents"][0]["total"],
+            },
+            indent=2,
+        )
+    )
+    agent = board["agents"][0]
+    return 0 if agent["scored"] and agent["scored_accepted"] == agent["scored"] else 1
+
+
 def cmd_validate_schema(args: argparse.Namespace) -> int:
     receipt = load_json(args.receipt)
     result = validate_receipt(receipt, args.schema)
@@ -132,7 +181,7 @@ def cmd_validate_schema(args: argparse.Namespace) -> int:
 
 
 def cmd_selftest(_: argparse.Namespace) -> int:
-    """Score bundled gold submissions and clean agent logs; exit non-zero on failure."""
+    """Score bundled gold submissions, clean logs, and pass/fail traces."""
     root = repo_root()
     failures: list[str] = []
 
@@ -171,6 +220,18 @@ def cmd_selftest(_: argparse.Namespace) -> int:
         if not v["ok"]:
             failures.append(f"schema:{sid}:{v.get('errors')}")
 
+    core = load_json(root / "security" / "suites" / "core_v1.json")
+    pass_trace = root / "examples" / "traces" / "mcp_session_pass.jsonl"
+    fail_trace = root / "examples" / "traces" / "mcp_session_fail.jsonl"
+    if pass_trace.is_file():
+        log = map_session_to_suite_cases(trace_to_agent_log(load_trace(pass_trace)), core)
+        if score_security_suite(core, log)["outcome"] != "accepted":
+            failures.append("trace:mcp_session_pass")
+    if fail_trace.is_file():
+        log = map_session_to_suite_cases(trace_to_agent_log(load_trace(fail_trace)), core)
+        if score_security_suite(core, log)["outcome"] == "accepted":
+            failures.append("trace:mcp_session_fail_should_reject")
+
     print(json.dumps({"ok": not failures, "failures": failures, "bench_version": BENCH_VERSION}))
     return 1 if failures else 0
 
@@ -178,7 +239,7 @@ def cmd_selftest(_: argparse.Namespace) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="asb",
-        description=f"Agent Security Bench runner (v{BENCH_VERSION})",
+        description=f"Agent Security Evaluation Kit (v{BENCH_VERSION})",
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
@@ -201,17 +262,29 @@ def main(argv: list[str] | None = None) -> int:
     p_sec.add_argument("--out", type=Path, required=True)
     p_sec.set_defaults(func=cmd_security)
 
+    p_tr = sub.add_parser("score-trace", help="Score a suite from an OpenAI/Anthropic/MCP JSONL trace")
+    p_tr.add_argument("--suite", type=Path, required=True)
+    p_tr.add_argument("--trace", type=Path, required=True)
+    p_tr.add_argument("--out", type=Path, required=True)
+    p_tr.set_defaults(func=cmd_score_trace)
+
     p_batch = sub.add_parser("batch", help="Score a folder of submissions against all tasks")
     p_batch.add_argument("--submissions-dir", type=Path, required=True)
     p_batch.add_argument("--out-dir", type=Path, required=True)
     p_batch.set_defaults(func=cmd_batch)
+
+    p_lb = sub.add_parser("leaderboard", help="Emit task x agent matrix and leaderboard.json")
+    p_lb.add_argument("--agent-id", type=str, default="gold")
+    p_lb.add_argument("--submissions-dir", type=Path, default=None)
+    p_lb.add_argument("--out-dir", type=Path, required=True)
+    p_lb.set_defaults(func=cmd_leaderboard)
 
     p_val = sub.add_parser("validate-receipt", help="Validate a receipt against JSON Schema")
     p_val.add_argument("--receipt", type=Path, required=True)
     p_val.add_argument("--schema", type=Path, default=None)
     p_val.set_defaults(func=cmd_validate_schema)
 
-    p_self = sub.add_parser("selftest", help="Run gold fixtures + schema checks")
+    p_self = sub.add_parser("selftest", help="Run gold fixtures + schema + trace checks")
     p_self.set_defaults(func=cmd_selftest)
 
     args = parser.parse_args(argv)

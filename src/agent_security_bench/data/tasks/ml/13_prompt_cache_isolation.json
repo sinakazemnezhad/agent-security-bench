@@ -1,0 +1,38 @@
+{
+  "id": "ml.13_prompt_cache_isolation",
+  "title": "Isolate tenant prompt cache keys",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "A multi-tenant LLM gateway caches completions keyed only by prompt hash. Tenant B can hit Tenant A's cached completion. Fix cache key construction so it includes tenant_id (and model id). Reject cross-tenant reads.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "tenant_in_key",
+      "type": "contains_any",
+      "patterns": ["tenant_id", "tenantId", "org_id"],
+      "required": true,
+      "weight": 2.5
+    },
+    {
+      "id": "model_in_key",
+      "type": "contains_any",
+      "patterns": ["model_id", "model_name", "model="],
+      "required": true,
+      "weight": 1.5
+    },
+    {
+      "id": "reject_cross_tenant",
+      "type": "contains_any",
+      "patterns": ["PermissionError", "Forbidden", "cross-tenant", "tenant mismatch", "raise"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "no_prompt_only_key",
+      "type": "not_contains",
+      "pattern": "key = hash(prompt)",
+      "required": true,
+      "weight": 2.0
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "ml.09_gradient_clip",
+  "title": "Stabilize exploding gradients",
+  "difficulty": "medium",
+  "domain": "ml",
+  "prompt": "Loss NaNs during fine-tuning. Add gradient clipping and a finite-loss guard before optimizer.step().",
+  "checks": [
+    {
+      "id": "clip",
+      "type": "contains_any",
+      "patterns": [
+        "clip_grad",
+        "gradient_clip",
+        "max_norm"
+      ],
+      "required": true
+    },
+    {
+      "id": "finite_guard",
+      "type": "contains_any",
+      "patterns": [
+        "isfinite",
+        "isnan",
+        "math.isfinite",
+        "torch.isfinite"
+      ],
+      "required": true
+    }
+  ]
+}
