@@ -38,7 +38,10 @@ See [INDEX.md](INDEX.md) for the full catalog. Demand → buyer map: [docs/DEMAN
 
 ![money_v1 demo](docs/money_v1_demo.gif)
 
-
+```bash
+asb security --suite security/suites/money_v1.json \
+  --agent-log examples/agent_logs/money_v1_clean.json
+```
 
 Public scorecard: https://banking.noetfield.com/scorecard
 
@@ -67,7 +70,7 @@ asb score \
   --submission examples/submissions/01_train_loop_bug.py \
   --out receipts/t01.json
 asb security \
-  --suite security/suites/production_v1 / money_v1.json \
+  --suite security/suites/production_v1.json \
   --agent-log examples/agent_logs/production_v1_clean.json \
   --out receipts/s_prod.json
 asb validate-receipt --receipt receipts/t01.json
