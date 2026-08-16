@@ -1,0 +1,38 @@
+{
+  "id": "ml.11_calibration_curve",
+  "title": "Report calibration, not only accuracy",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "A classifier reports 0.94 accuracy but ops see mis-ranked probabilities. Add expected calibration error (ECE) or Brier score on the validation set and keep accuracy. Do not replace the primary metric with training-set accuracy.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "calibration_metric",
+      "type": "contains_any",
+      "patterns": ["calibration", "ece", "brier", "expected_calibration"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "uses_val",
+      "type": "contains_any",
+      "patterns": ["val_", "X_val", "y_val", "validation"],
+      "required": true,
+      "weight": 1.5
+    },
+    {
+      "id": "keeps_accuracy",
+      "type": "contains_any",
+      "patterns": ["accuracy", "accuracy_score"],
+      "required": true,
+      "weight": 1.0
+    },
+    {
+      "id": "no_train_acc_as_report",
+      "type": "not_contains",
+      "pattern": "accuracy = train_acc",
+      "required": true,
+      "weight": 1.5
+    }
+  ]
+}

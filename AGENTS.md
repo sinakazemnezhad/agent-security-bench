@@ -5,4 +5,6 @@
 - Keep proprietary company runtimes out of this repository.
 - Cross-link persian-llm-reference when documenting Persian/ML evaluation context.
 - Every scored run must write a receipt; `outcome=accepted` only when required checks pass.
-- Use `asb list`, `asb score`, `asb security`, `asb batch`, `asb validate-receipt`.
+- Prefer AST / schema checks when string predicates are ambiguous.
+- Security logs that omit `tool_calls` for monitored tools fail closed on arg policies.
+- CLI: `asb list`, `asb catalog`, `asb score`, `asb security`, `asb batch`, `asb validate-receipt`, `asb selftest`.

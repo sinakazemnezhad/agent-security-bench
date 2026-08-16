@@ -1,0 +1,38 @@
+{
+  "id": "ml.15_receipt_emit",
+  "title": "Emit a verifiable run receipt",
+  "difficulty": "hard",
+  "domain": "ml",
+  "prompt": "After an agent finishes a coding task, emit a receipt JSON with run_id, created_at (UTC ISO-8601), subject id, outcome in {accepted,rejected,error}, scores object, and checks array. Do not claim accepted if any required check failed.",
+  "checks": [
+    { "id": "python_parses", "type": "python_parses", "required": true, "weight": 1.0 },
+    {
+      "id": "receipt_fields",
+      "type": "contains_any",
+      "patterns": ["run_id", "created_at", "outcome", "checks"],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "outcome_enum",
+      "type": "contains_any",
+      "patterns": ["accepted", "rejected"],
+      "required": true,
+      "weight": 1.5
+    },
+    {
+      "id": "required_fail_gate",
+      "type": "contains_any",
+      "patterns": ["required", "rejected", "all("],
+      "required": true,
+      "weight": 2.0
+    },
+    {
+      "id": "writes_json",
+      "type": "ast_has_call",
+      "names": ["dumps", "dump", "json.dumps", "json.dump", "write_text"],
+      "required": true,
+      "weight": 1.5
+    }
+  ]
+}

@@ -4,7 +4,7 @@ title: "agent-security-bench: ML coding-agent eval and agent security receipts"
 authors:
   - family-names: Kazemnezhad
     given-names: Sina
-version: 0.2.0
+version: 0.3.0
 date-released: "2026-08-16"
 url: https://github.com/sinakazemnezhad/agent-security-bench
 repository-code: https://github.com/sinakazemnezhad/agent-security-bench
@@ -16,3 +16,4 @@ keywords:
   - jailbreak
   - mcp
   - machine-learning
+  - ssrf

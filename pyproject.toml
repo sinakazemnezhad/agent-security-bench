@@ -1,7 +1,7 @@
 [project]
 name = "agent-security-bench"
-version = "0.2.0"
-description = "Open bench for evaluating AI coding agents on ML tasks and agent security, with machine-readable receipts."
+version = "0.3.0"
+description = "Production-oriented open bench for ML coding-agent evaluation and agent security, with weighted checks, AST scoring, and machine-readable receipts."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -15,22 +15,33 @@ keywords = [
   "mcp",
   "machine-learning",
   "receipts",
+  "ssrf",
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Security",
 ]
-dependencies = []
+dependencies = [
+  "jsonschema>=4.22",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
 
 [project.urls]
 Homepage = "https://github.com/sinakazemnezhad/agent-security-bench"
 Repository = "https://github.com/sinakazemnezhad/agent-security-bench"
 Issues = "https://github.com/sinakazemnezhad/agent-security-bench/issues"
 Related = "https://github.com/sinakazemnezhad/persian-llm-reference"
+Changelog = "https://github.com/sinakazemnezhad/agent-security-bench/releases"
 
 [project.scripts]
 asb = "agent_security_bench.cli:main"
@@ -41,3 +52,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
